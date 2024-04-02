@@ -24,17 +24,20 @@ const articleInfo = [
   {
     name: 'learn-react',
     upvotes: 0,
-    downvotes: 0
+    downvotes: 0,
+    comments: []
   },
   {
     name: 'learn-node',
     upvotes: 0,
-    downvotes: 0
+    downvotes: 0,
+    comments: []
   },
   {
     name: 'mongodb',
     upvotes: 0,
-    downvotes: 0
+    downvotes: 0,
+    comments: []
   },
 ];
 // upvote
@@ -59,7 +62,18 @@ app.put('/api/articles/:name/downvote', (req, res) => {
     res.send('aricle not found');
   }
 });
-
+// comments
+app.post('/api/articles/:name/comments', (req, res) => {
+  const { name } = req.params;
+  const { postedBy, text } = req.body;
+  const article = articleInfo.find(a => a.name === name);
+  if (article) {
+    article.comments.push({ postedBy, text });
+    res.send(article.comments);
+  } else {
+    res.send('aricle not found');
+  }
+});
 const port = 3001;
 
 app.listen(port, () => {
