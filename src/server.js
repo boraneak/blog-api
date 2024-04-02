@@ -10,6 +10,12 @@ app.post('/', (req, res) => {
   console.log(`hello ${req.body.name}`);
   res.end();
 });
+
+app.get('/hello/:name', (req, res) => {
+  const { name } = req.params;
+  console.log(name);
+  res.end();
+});
 const port = 3001;
 
 app.listen(port, () => {
