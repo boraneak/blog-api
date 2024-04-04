@@ -1,5 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
+import { dbConn } from '../database/index.js';
 const app = express();
 
 app.use(express.json());
@@ -40,6 +41,11 @@ const articleInfo = [
     comments: []
   },
 ];
+// get a single article from db
+// app.get('/api/articles/:name', async (req, res) => {
+//   const { name } = req.params;
+//   res.send(name);
+// });
 // upvote
 app.put('/api/articles/:name/upvote', (req, res) => {
   const { name } = req.params;
@@ -74,8 +80,19 @@ app.post('/api/articles/:name/comments', (req, res) => {
     res.send('aricle not found');
   }
 });
-const port = 3001;
 
-app.listen(port, () => {
-  console.log(`server is listening on http://localhost:${port}`);
-});
+const port = process.env.PORT;
+
+async function startServer() {
+  try {
+    await dbConn();
+    app.listen(port, () => {
+      console.log(`Server is listening on http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('Error connecting to database:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
