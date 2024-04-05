@@ -52,17 +52,7 @@ app.put('/api/articles/:name/upvote', async (req, res) => {
     res.sendStatus(404);
   }
 });
-//downvote
-app.put('/api/articles/:name/downvote', (req, res) => {
-  const { name } = req.params;
-  const article = articleInfo.find(a => a.name === name);
-  if (article) {
-    article.upvotes -= 1;
-    res.send(`the ${name} article now has ${article.upvotes} downvotes`);
-  } else {
-    res.send('aricle not found');
-  }
-});
+
 // comments
 app.post('/api/articles/:name/comments', (req, res) => {
   const { name } = req.params;
