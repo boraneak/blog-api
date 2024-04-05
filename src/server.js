@@ -20,32 +20,24 @@ app.get('/hello/:name', (req, res) => {
   res.end();
 });
 
-// fake articles' data
-const articleInfo = [
-  {
-    name: 'learn-react',
-    upvotes: 0,
-    downvotes: 0,
-    comments: []
-  },
-  {
-    name: 'learn-node',
-    upvotes: 0,
-    downvotes: 0,
-    comments: []
-  },
-  {
-    name: 'mongodb',
-    upvotes: 0,
-    downvotes: 0,
-    comments: []
-  },
-];
-// get a single article from db
-// app.get('/api/articles/:name', async (req, res) => {
-//   const { name } = req.params;
-//   res.send(name);
-// });
+// get a single article from mongodb
+
+app.get('/api/articles/:name', async (req, res) => {
+  const { name } = req.params;
+  try {
+    const mongoClient = await dbConn();
+    const database = mongoClient.db('blog');
+    const article = await database.collection('articles').findOne({ name: name });
+    if (article) {
+      res.status(200).send(article);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    console.log('cannot get mongo client', error);
+  }
+
+});
 // upvote
 app.put('/api/articles/:name/upvote', (req, res) => {
   const { name } = req.params;
