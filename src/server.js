@@ -39,14 +39,17 @@ app.get('/api/articles/:name', async (req, res) => {
 
 });
 // upvote
-app.put('/api/articles/:name/upvote', (req, res) => {
+app.put('/api/articles/:name/upvote', async (req, res) => {
   const { name } = req.params;
-  const article = articleInfo.find(a => a.name === name);
+  const mongoClient = await dbConn();
+  const database = mongoClient.db('blog');
+  await database.collection('articles').updateOne({ name: name }, { $inc: { upvotes: 1 } });
+
+  const article = await database.collection('articles').findOne({ name: name });
   if (article) {
-    article.upvotes += 1;
-    res.send(`the ${name} article now has ${article.upvotes} upvotes`);
+    res.status(200).send(article);
   } else {
-    res.send('aricle not found');
+    res.sendStatus(404);
   }
 });
 //downvote
