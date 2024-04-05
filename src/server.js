@@ -54,15 +54,18 @@ app.put('/api/articles/:name/upvote', async (req, res) => {
 });
 
 // comments
-app.post('/api/articles/:name/comments', (req, res) => {
+app.post('/api/articles/:name/comments', async (req, res) => {
   const { name } = req.params;
   const { postedBy, text } = req.body;
-  const article = articleInfo.find(a => a.name === name);
+  const mongoClient = await dbConn();
+  const database = mongoClient.db('blog');
+  await database.collection('articles').updateOne({ name }, { $push: { comments: { postedBy, text } } });
+
+  const article = await database.collection('articles').findOne({ name: name });
   if (article) {
-    article.comments.push({ postedBy, text });
-    res.send(article.comments);
+    res.status(200).send(article);
   } else {
-    res.send('aricle not found');
+    res.sendStatus(404);
   }
 });
 
