@@ -7,10 +7,7 @@ const uri = process.env.DB_URI;
 async function connectToDB() {
   let mongoClient;
   try {
-    mongoClient = new MongoClient(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    mongoClient = new MongoClient(uri);
     await mongoClient.connect();
     db = mongoClient.db('blog');
     console.log('Database connection successful');
