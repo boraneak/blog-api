@@ -1,22 +1,25 @@
 import { config } from 'dotenv';
+import { MongoClient } from 'mongodb';
+let db;
+
 config();
-import { MongoClient, ServerApiVersion } from 'mongodb';
 const uri = process.env.DB_URI;
-export async function dbConn() {
+async function connectToDB() {
   let mongoClient;
   try {
     mongoClient = new MongoClient(uri, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true
-      }
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
     await mongoClient.connect();
+    db = mongoClient.db('blog');
     console.log('Database connection successful');
-    return mongoClient;
+    return { client: mongoClient, db };
   } catch (error) {
     console.error('Error connecting to database:', error);
     await mongoClient.close();
+    throw error;
   }
 }
+
+export { connectToDB, db }

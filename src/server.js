@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-import { dbConn } from '../database/index.js';
+import { connectToDB, db } from '../database/index.js';
 const app = express();
 
 app.use(express.json());
@@ -25,9 +25,7 @@ app.get('/hello/:name', (req, res) => {
 app.get('/api/articles/:name', async (req, res) => {
   const { name } = req.params;
   try {
-    const mongoClient = await dbConn();
-    const database = mongoClient.db('blog');
-    const article = await database.collection('articles').findOne({ name: name });
+    const article = await db.collection('articles').findOne({ name: name });
     if (article) {
       res.status(200).send(article);
     } else {
@@ -41,11 +39,9 @@ app.get('/api/articles/:name', async (req, res) => {
 // upvote
 app.put('/api/articles/:name/upvote', async (req, res) => {
   const { name } = req.params;
-  const mongoClient = await dbConn();
-  const database = mongoClient.db('blog');
-  await database.collection('articles').updateOne({ name: name }, { $inc: { upvotes: 1 } });
+  await db.collection('articles').updateOne({ name: name }, { $inc: { upvotes: 1 } });
 
-  const article = await database.collection('articles').findOne({ name: name });
+  const article = await db.collection('articles').findOne({ name: name });
   if (article) {
     res.status(200).send(article);
   } else {
@@ -57,11 +53,9 @@ app.put('/api/articles/:name/upvote', async (req, res) => {
 app.post('/api/articles/:name/comments', async (req, res) => {
   const { name } = req.params;
   const { postedBy, text } = req.body;
-  const mongoClient = await dbConn();
-  const database = mongoClient.db('blog');
-  await database.collection('articles').updateOne({ name }, { $push: { comments: { postedBy, text } } });
+  await db.collection('articles').updateOne({ name }, { $push: { comments: { postedBy, text } } });
 
-  const article = await database.collection('articles').findOne({ name: name });
+  const article = await db.collection('articles').findOne({ name: name });
   if (article) {
     res.status(200).send(article);
   } else {
@@ -73,7 +67,7 @@ const port = process.env.PORT;
 
 async function startServer() {
   try {
-    await dbConn();
+    await connectToDB();
     app.listen(port, () => {
       console.log(`Server is listening on http://localhost:${port}`);
     });
