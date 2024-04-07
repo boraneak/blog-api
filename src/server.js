@@ -1,13 +1,13 @@
 import express from 'express';
 import morgan from 'morgan';
-import cors from 'cors';
+// import cors from 'cors';
 import { connectToDB, db } from '../database/index.js';
 const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
 // allow cors for all routes
-app.use(cors());
+// app.use(cors());
 app.get('/', (req, res) => {
   res.send('hello, ur sever is up and running...!');
 })
