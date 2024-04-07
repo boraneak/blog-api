@@ -12,17 +12,6 @@ app.get('/', (req, res) => {
   res.send('hello, ur sever is up and running...!');
 })
 
-app.post('/', (req, res) => {
-  console.log(`hello ${req.body.name}`);
-  res.end();
-});
-
-app.get('/hello/:name', (req, res) => {
-  const { name } = req.params;
-  console.log(name);
-  res.end();
-});
-
 // get a single article from mongodb
 
 app.get('/api/articles/:name', async (req, res) => {
