@@ -39,6 +39,25 @@ app.get('/api/articles/:name', async (req, res) => {
   }
 
 });
+
+// get all articles
+
+app.get('/api/articles', async (req, res) => {
+  try {
+    const articlesCursor = await db.collection('articles').find();
+    const articles = await articlesCursor.toArray();
+    
+    if (articles.length > 0) {
+      res.status(200).send(articles);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    console.log('Error fetching articles:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 // upvote
 app.put('/api/articles/:name/upvote', async (req, res) => {
   const { name } = req.params;
