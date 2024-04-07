@@ -24,9 +24,8 @@ app.get('/api/articles/:name', async (req, res) => {
       res.sendStatus(404);
     }
   } catch (error) {
-    console.log('cannot get mongo client', error);
+    console.log('Error retrieving article from the database:', error);
   }
-
 });
 
 // get all articles
