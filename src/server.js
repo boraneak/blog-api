@@ -1,5 +1,15 @@
 import express from 'express';
 import morgan from 'morgan';
+
+import admin from 'firebase-admin';
+
+import serviceAccount from '../credentials.json' assert {type: 'json'};
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://my-react-blog-ff8b3-default-rtdb.asia-southeast1.firebasedatabase.app"
+});
+
 // import cors from 'cors';
 import { connectToDB, db } from '../database/index.js';
 const app = express();
@@ -34,7 +44,6 @@ app.get('/api/articles', async (req, res) => {
   try {
     const articlesCursor = await db.collection('articles').find();
     const articles = await articlesCursor.toArray();
-    
     if (articles.length > 0) {
       res.status(200).send(articles);
     } else {
@@ -72,6 +81,11 @@ app.post('/api/articles/:name/comments', async (req, res) => {
     res.sendStatus(404);
   }
 });
+
+// login
+// app.post('/api/login', (req, res) => {
+//   const {email, password } = req.body;
+// });
 
 const port = process.env.PORT;
 
