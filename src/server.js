@@ -6,16 +6,11 @@ const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 admin.initializeApp({
   credential: admin.credential.cert(credentials),
 });
-// import cors from 'cors';
 import { connectToDB, db } from "../database/index.js";
 const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
-// allow cors for all routes
-// app.use(cors());
-
-// get a single article from mongodb
 
 app.get("/api/articles/:name", async (req, res) => {
   const { name } = req.params;
@@ -30,8 +25,6 @@ app.get("/api/articles/:name", async (req, res) => {
     console.log("Error retrieving article from the database:", error);
   }
 });
-
-// get all articles
 
 app.get("/api/articles", async (req, res) => {
   try {
@@ -48,7 +41,6 @@ app.get("/api/articles", async (req, res) => {
   }
 });
 
-// upvote
 app.put("/api/articles/:name/upvote", async (req, res) => {
   const { name } = req.params;
   await db
@@ -63,7 +55,6 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
   }
 });
 
-// comments
 app.post("/api/articles/:name/comments", async (req, res) => {
   const { name } = req.params;
   const { postedBy, text } = req.body;
@@ -78,11 +69,6 @@ app.post("/api/articles/:name/comments", async (req, res) => {
     res.sendStatus(404);
   }
 });
-
-// login
-// app.post('/api/login', (req, res) => {
-//   const {email, password } = req.body;
-// });
 
 const port = process.env.PORT;
 
