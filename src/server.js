@@ -1,16 +1,11 @@
 import express from "express";
 import morgan from "morgan";
-
+import fs from "fs";
 import admin from "firebase-admin";
-
-import serviceAccount from "../credentials.json" assert { type: "json" };
-
+const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL:
-    "https://my-react-blog-ff8b3-default-rtdb.asia-southeast1.firebasedatabase.app",
+  credential: admin.credential.cert(credentials),
 });
-
 // import cors from 'cors';
 import { connectToDB, db } from "../database/index.js";
 const app = express();
@@ -19,9 +14,6 @@ app.use(express.json());
 app.use(morgan("dev"));
 // allow cors for all routes
 // app.use(cors());
-app.get("/", (req, res) => {
-  res.send("hello, ur sever is up and running...!");
-});
 
 // get a single article from mongodb
 
