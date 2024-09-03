@@ -3,7 +3,7 @@ import { MongoClient } from 'mongodb';
 let db;
 
 config();
-const uri = process.env.DB_URI;
+const uri = process.env.MONGO_DB_URI;
 async function connectToDB() {
   let mongoClient;
   try {
